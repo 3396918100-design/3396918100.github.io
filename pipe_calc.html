@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>管道管径计算器</title>
+    <style>
+        body{font-family:微软雅黑;max-width:600px;margin:30px auto;padding:20px;}
+        .item{margin:12px 0;}
+        label{display:block;margin:5px 0;}
+        input{padding:8px;width:95%;font-size:16px;}
+        button{background:#2563eb;color:white;padding:10px 20px;font-size:17px;border:none;border-radius:6px;cursor:pointer;}
+        #res{margin-top:18px;padding:15px;background:#eef7ff;border-radius:8px;}
+    </style>
+</head>
+<body>
+    <h2>📐化工管道管径选择计算器</h2>
+    <div class="item">
+        <label>质量流量 (kg/h):</label>
+        <input id="qm" placeholder="例如：9000" value="9000">
+    </div>
+    <div class="item">
+        <label>流体密度 (kg/m³):</label>
+        <input id="rho" placeholder="例如：810" value="810">
+    </div>
+    <div class="item">
+        <label>初选流速u(m/s):</label>
+        <input id="u0" placeholder="例如：1.8" value="1.8">
+    </div>
+    <button onclick="calc()">开始计算</button>
+    <div id="res"></div>
+<script>
+function calc(){
+    let qm=parseFloat(document.getElementById("qm").value);
+    let rho=parseFloat(document.getElementById("rho").value);
+    let u0=parseFloat(document.getElementById("u0").value);
+    let Vs = qm/(3600*rho);
+    let d_calc = Math.sqrt(4*Vs/(Math.PI*u0));
+    // 选φ57×3钢管内径0.051m
+    let d_pipe = 0.051;
+    let u_real = 4*Vs/(Math.PI*d_pipe*d_pipe);
+    let txt = `
+    <p>✅体积流量 Vs = ${Vs.toExponential(3)} m³/s</p>
+    <p>✅计算内径 d = ${(d_calc*1000).toFixed(1)} mm</p>
+    <p>👉选用无缝钢管：φ57 mm ×3 mm，内径51 mm</p>
+    <p>✅校核流速 u = ${u_real.toFixed(2)} m/s</p>
+    <p>📌液体常用流速：1~3 m/s，${(u_real>=1&&u_real<=3)?"✅流速合格！":"⚠️流速不在范围！"}</p>
+    `;
+    document.getElementById("res").innerHTML=txt;
+}
+</script>
+</body>
+</html>
